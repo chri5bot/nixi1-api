@@ -1,0 +1,24 @@
+{
+  "name": "nixi1-api",
+  "version": "1.0.0",
+  "description": "backend test to nixi1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chri5bot/nixi1-api.git"
+  },
+  "keywords": [
+    "test",
+    "graphql",
+    "node"
+  ],
+  "author": "Christian Torres",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chri5bot/nixi1-api/issues"
+  },
+  "homepage": "https://github.com/chri5bot/nixi1-api#readme"
+}
