@@ -1,4 +1,5 @@
 import express from 'express';
+import { PORT } from './config';
 
 const app = express();
 
@@ -8,17 +9,6 @@ app.get('/', async (req, res) => {
   return res.json({ ...thing, hello: 'world' }); // object-rest-spread!
 });
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, (err) => {
-  if (err) {
-    console.error(err);
-  }
-
-  if (__DEV__) {
-    // webpack flags!
-    console.log('> in development');
-  }
-
-  console.log(`> listening on port ${port}`);
+app.listen({ port: PORT }, () => {
+  console.log(`> Server ready at ${PORT}`);
 });
