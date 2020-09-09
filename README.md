@@ -13,3 +13,8 @@
 - https://github.com/motdotla/dotenv
 
   Dotenv is a zero-dependency module that loads environment variables from a .env file into process.env. Storing configuration in the environment separate from code is based on The Twelve-Factor App methodology.
+
+- https://github.com/lodash/lodash
+
+  Lodash makes JavaScript easier by taking the hassle out of working with arrays,
+  numbers, objects, strings, etc.

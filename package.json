@@ -25,8 +25,11 @@
   },
   "homepage": "https://github.com/chri5bot/nixi1-api#readme",
   "dependencies": {
+    "apollo-server-express": "^2.17.0",
     "backpack-core": "^0.8.4",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "graphql": "^15.3.0",
+    "lodash": "^4.17.20"
   }
 }

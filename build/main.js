@@ -127,9 +127,14 @@ const DB_DIALECT = process.env.DB_DIALECT || '';
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! express */ "express");
-/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
+/* harmony import */ var http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! http */ "http");
+/* harmony import */ var http__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(http__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! express */ "express");
+/* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(express__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! apollo-server-express */ "apollo-server-express");
+/* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(apollo_server_express__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
+/* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./schema */ "./src/schema.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -138,7 +143,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-const app = express__WEBPACK_IMPORTED_MODULE_0___default()();
+
+
+
+const app = express__WEBPACK_IMPORTED_MODULE_1___default()();
+const server = new apollo_server_express__WEBPACK_IMPORTED_MODULE_2__["ApolloServer"]({
+  schema: _schema__WEBPACK_IMPORTED_MODULE_4__["default"],
+  playground: {
+    settings: {
+      'editor.theme': 'light'
+    }
+  }
+});
+server.applyMiddleware({
+  app
+});
+const httpServer = Object(http__WEBPACK_IMPORTED_MODULE_0__["createServer"])(app);
+server.installSubscriptionHandlers(httpServer);
 app.get('/', async (req, res) => {
   const thing = await Promise.resolve({
     one: 'two'
@@ -150,11 +171,52 @@ app.get('/', async (req, res) => {
     hello: 'world'
   })); // object-rest-spread!
 });
-app.listen({
-  port: _config__WEBPACK_IMPORTED_MODULE_1__["PORT"]
-}, () => {
-  console.log(`> Server ready at ${_config__WEBPACK_IMPORTED_MODULE_1__["PORT"]}`);
+httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
+  // eslint-disable-next-line no-console
+  console.log(`> Server ready at http://localhost:${_config__WEBPACK_IMPORTED_MODULE_3__["PORT"]}${server.graphqlPath}`); // eslint-disable-next-line no-console
+
+  console.log(`> Subscriptions ready at ws://localhost:${_config__WEBPACK_IMPORTED_MODULE_3__["PORT"]}${server.subscriptionsPath}`);
 });
+
+/***/ }),
+
+/***/ "./src/schema.js":
+/*!***********************!*\
+  !*** ./src/schema.js ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! apollo-server-express */ "apollo-server-express");
+/* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(apollo_server_express__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const Root = apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["gql"]`
+  type Query {
+    _: Boolean
+  }
+  type Mutation {
+    _: Boolean
+  }
+  type Subscription {
+    _: Boolean
+  }
+  schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+  }
+`;
+const resolvers = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["merge"])({});
+const schema = Object(apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["makeExecutableSchema"])({
+  typeDefs: [Root],
+  resolvers
+});
+/* harmony default export */ __webpack_exports__["default"] = (schema);
 
 /***/ }),
 
@@ -167,6 +229,17 @@ app.listen({
 
 module.exports = __webpack_require__(/*! C:\Users\star5\dev\test\nixi1-api\src/index.js */"./src/index.js");
 
+
+/***/ }),
+
+/***/ "apollo-server-express":
+/*!****************************************!*\
+  !*** external "apollo-server-express" ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("apollo-server-express");
 
 /***/ }),
 
@@ -189,6 +262,28 @@ module.exports = require("dotenv");
 /***/ (function(module, exports) {
 
 module.exports = require("express");
+
+/***/ }),
+
+/***/ "http":
+/*!***********************!*\
+  !*** external "http" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("http");
+
+/***/ }),
+
+/***/ "lodash":
+/*!*************************!*\
+  !*** external "lodash" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("lodash");
 
 /***/ })
 
