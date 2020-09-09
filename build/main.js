@@ -174,9 +174,7 @@ app.get('/', async (req, res) => {
   })); // object-rest-spread!
 });
 httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
-  // eslint-disable-next-line no-console
-  console.log(`> Server ready at http://localhost:${_config__WEBPACK_IMPORTED_MODULE_3__["PORT"]}${server.graphqlPath}`); // eslint-disable-next-line no-console
-
+  console.log(`> Server ready at http://localhost:${_config__WEBPACK_IMPORTED_MODULE_3__["PORT"]}${server.graphqlPath}`);
   console.log(`> Subscriptions ready at ws://localhost:${_config__WEBPACK_IMPORTED_MODULE_3__["PORT"]}${server.subscriptionsPath}`);
 });
 
@@ -193,7 +191,6 @@ httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _topics_message_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../topics/message/index */ "./src/topics/message/index.js");
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../index */ "./src/index.js");
- // eslint-disable-next-line import/no-cycle
 
 
 /* harmony default export */ __webpack_exports__["default"] = (async (_, args) => {

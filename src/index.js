@@ -29,11 +29,9 @@ app.get('/', async (req, res) => {
 });
 
 httpServer.listen(PORT, () => {
-  // eslint-disable-next-line no-console
   console.log(
     `> Server ready at http://localhost:${PORT}${server.graphqlPath}`
   );
-  // eslint-disable-next-line no-console
   console.log(
     `> Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
   );
