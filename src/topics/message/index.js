@@ -1,0 +1,3 @@
+const MESSAGE_CREATED = 'MESSAGE_CREATED';
+
+export default MESSAGE_CREATED;

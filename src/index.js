@@ -4,6 +4,8 @@ import { ApolloServer, PubSub } from 'apollo-server-express';
 import { PORT } from './config';
 import schema from './schema';
 
+export const pubsub = new PubSub();
+
 const app = express();
 
 const server = new ApolloServer({

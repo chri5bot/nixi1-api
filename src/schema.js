@@ -1,6 +1,12 @@
 import { makeExecutableSchema, gql } from 'apollo-server-express';
 import { merge } from 'lodash';
 
+import Message from './types/Message';
+
+import MessageQueries from './queries/message';
+
+import MessageSubscriptions from './subscriptions/message';
+
 const Root = gql`
   type Query {
     _: Boolean
@@ -18,10 +24,10 @@ const Root = gql`
   }
 `;
 
-const resolvers = merge({});
+const resolvers = merge({}, MessageQueries, MessageSubscriptions);
 
 const schema = makeExecutableSchema({
-  typeDefs: [Root],
+  typeDefs: [Root, Message],
   resolvers,
 });
 

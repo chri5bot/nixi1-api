@@ -122,11 +122,12 @@ const DB_DIALECT = process.env.DB_DIALECT || '';
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
-/*! no exports provided */
+/*! exports provided: pubsub */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pubsub", function() { return pubsub; });
 /* harmony import */ var http__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! http */ "http");
 /* harmony import */ var http__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(http__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var express__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! express */ "express");
@@ -146,6 +147,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+const pubsub = new apollo_server_express__WEBPACK_IMPORTED_MODULE_2__["PubSub"]();
 const app = express__WEBPACK_IMPORTED_MODULE_1___default()();
 const server = new apollo_server_express__WEBPACK_IMPORTED_MODULE_2__["ApolloServer"]({
   schema: _schema__WEBPACK_IMPORTED_MODULE_4__["default"],
@@ -180,6 +182,38 @@ httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
 
 /***/ }),
 
+/***/ "./src/queries/message/index.js":
+/*!**************************************!*\
+  !*** ./src/queries/message/index.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./messages */ "./src/queries/message/messages.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  Query: {
+    messages: _messages__WEBPACK_IMPORTED_MODULE_0__["default"]
+  }
+});
+
+/***/ }),
+
+/***/ "./src/queries/message/messages.js":
+/*!*****************************************!*\
+  !*** ./src/queries/message/messages.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (async (_, args) => args.message);
+
+/***/ }),
+
 /***/ "./src/schema.js":
 /*!***********************!*\
   !*** ./src/schema.js ***!
@@ -193,6 +227,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(apollo_server_express__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _types_Message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./types/Message */ "./src/types/Message.js");
+/* harmony import */ var _queries_message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./queries/message */ "./src/queries/message/index.js");
+/* harmony import */ var _subscriptions_message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./subscriptions/message */ "./src/subscriptions/message/index.js");
+
+
+
 
 
 const Root = apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["gql"]`
@@ -211,12 +251,98 @@ const Root = apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["gql"]`
     subscription: Subscription
   }
 `;
-const resolvers = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["merge"])({});
+const resolvers = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["merge"])({}, _queries_message__WEBPACK_IMPORTED_MODULE_3__["default"], _subscriptions_message__WEBPACK_IMPORTED_MODULE_4__["default"]);
 const schema = Object(apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["makeExecutableSchema"])({
-  typeDefs: [Root],
+  typeDefs: [Root, _types_Message__WEBPACK_IMPORTED_MODULE_2__["default"]],
   resolvers
 });
 /* harmony default export */ __webpack_exports__["default"] = (schema);
+
+/***/ }),
+
+/***/ "./src/subscriptions/message/index.js":
+/*!********************************************!*\
+  !*** ./src/subscriptions/message/index.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _messageCreated__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./messageCreated */ "./src/subscriptions/message/messageCreated.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  Subscription: {
+    messageCreated: _messageCreated__WEBPACK_IMPORTED_MODULE_0__["default"]
+  }
+});
+
+/***/ }),
+
+/***/ "./src/subscriptions/message/messageCreated.js":
+/*!*****************************************************!*\
+  !*** ./src/subscriptions/message/messageCreated.js ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../index */ "./src/index.js");
+/* harmony import */ var _topics_message_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../topics/message/index */ "./src/topics/message/index.js");
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  subscribe: () => _index__WEBPACK_IMPORTED_MODULE_0__["pubsub"].asyncIterator([_topics_message_index__WEBPACK_IMPORTED_MODULE_1__["default"]])
+});
+
+/***/ }),
+
+/***/ "./src/topics/message/index.js":
+/*!*************************************!*\
+  !*** ./src/topics/message/index.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const MESSAGE_CREATED = 'MESSAGE_CREATED';
+/* harmony default export */ __webpack_exports__["default"] = (MESSAGE_CREATED);
+
+/***/ }),
+
+/***/ "./src/types/Message.js":
+/*!******************************!*\
+  !*** ./src/types/Message.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! apollo-server-express */ "apollo-server-express");
+/* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(apollo_server_express__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = (apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["gql"]`
+  type Message {
+    id: String!
+    text: String!
+  }
+  input createMessageInput {
+    id: String!
+    text: String!
+  }
+  extend type Mutation {
+    createMessage(input: createMessageInput): Message
+  }
+  extend type Subscription {
+    messageCreated: Message
+  }
+  extend type Query {
+    messages: [Message]
+  }
+`);
 
 /***/ }),
 
