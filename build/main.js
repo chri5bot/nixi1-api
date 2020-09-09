@@ -184,6 +184,47 @@ httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
 
 /***/ }),
 
+/***/ "./src/models/message.js":
+/*!*******************************!*\
+  !*** ./src/models/message.js ***!
+  \*******************************/
+/*! exports provided: MessageSchema, Message, MessageTC */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MessageSchema", function() { return MessageSchema; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Message", function() { return Message; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MessageTC", function() { return MessageTC; });
+/* harmony import */ var mongoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mongoose */ "mongoose");
+/* harmony import */ var mongoose__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(mongoose__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var mongoose_timestamp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! mongoose-timestamp */ "mongoose-timestamp");
+/* harmony import */ var mongoose_timestamp__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(mongoose_timestamp__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var graphql_compose_mongoose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! graphql-compose-mongoose */ "graphql-compose-mongoose");
+/* harmony import */ var graphql_compose_mongoose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(graphql_compose_mongoose__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const MessageSchema = new mongoose__WEBPACK_IMPORTED_MODULE_0__["Schema"]({
+  text: {
+    type: String,
+    lowercase: true,
+    trim: true,
+    required: true
+  }
+}, {
+  collection: 'messages'
+});
+MessageSchema.plugin(mongoose_timestamp__WEBPACK_IMPORTED_MODULE_1___default.a);
+MessageSchema.index({
+  createdAt: 1,
+  updatedAt: 1
+});
+const Message = mongoose__WEBPACK_IMPORTED_MODULE_0___default.a.model('Message', MessageSchema);
+const MessageTC = Object(graphql_compose_mongoose__WEBPACK_IMPORTED_MODULE_2__["composeWithMongoose"])(Message);
+
+/***/ }),
+
 /***/ "./src/mutations/message/createMessage.js":
 /*!************************************************!*\
   !*** ./src/mutations/message/createMessage.js ***!
@@ -195,23 +236,27 @@ httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _topics_message_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../topics/message/index */ "./src/topics/message/index.js");
 /* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../index */ "./src/index.js");
+/* harmony import */ var _models_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/message */ "./src/models/message.js");
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = (async (_, args) => {
-  const {
-    id,
-    text
-  } = await args.input;
-  await _index__WEBPACK_IMPORTED_MODULE_1__["pubsub"].publish(_topics_message_index__WEBPACK_IMPORTED_MODULE_0__["default"], {
-    messageCreated: {
-      id,
+  try {
+    const {
       text
-    }
-  });
-  return {
-    id,
-    text
-  };
+    } = await args.input;
+    await _models_message__WEBPACK_IMPORTED_MODULE_2__["Message"].create({
+      text
+    });
+    await _index__WEBPACK_IMPORTED_MODULE_1__["pubsub"].publish(_topics_message_index__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      messageCreated: {
+        text
+      }
+    });
+    return 'success';
+  } catch (e) {
+    return e.message;
+  }
 });
 
 /***/ }),
@@ -381,15 +426,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = (apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["gql"]`
   type Message {
-    id: String!
     text: String!
   }
   input createMessageInput {
-    id: String!
     text: String!
   }
   extend type Mutation {
-    createMessage(input: createMessageInput): Message
+    createMessage(input: createMessageInput): String
   }
   extend type Subscription {
     messageCreated: Message
@@ -473,6 +516,17 @@ module.exports = require("express");
 
 /***/ }),
 
+/***/ "graphql-compose-mongoose":
+/*!*******************************************!*\
+  !*** external "graphql-compose-mongoose" ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("graphql-compose-mongoose");
+
+/***/ }),
+
 /***/ "http":
 /*!***********************!*\
   !*** external "http" ***!
@@ -503,6 +557,17 @@ module.exports = require("lodash");
 /***/ (function(module, exports) {
 
 module.exports = require("mongoose");
+
+/***/ }),
+
+/***/ "mongoose-timestamp":
+/*!*************************************!*\
+  !*** external "mongoose-timestamp" ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose-timestamp");
 
 /***/ })
 
