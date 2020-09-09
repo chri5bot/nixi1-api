@@ -1,5 +1,31 @@
 # nixi1-api
 
+## Run
+
+1. Clone the repository: `git clone https://github.com/chri5bot/nixi1-api.git`
+
+2. Go into the project: `cd nixi1-api/`
+
+3. Install packages: `npm install`
+
+4. Run the project: `npm run dev`
+
+5. Open the link: `http://localhost:4000/`
+
+6. First you need to login to generate a json web token
+
+```graphql
+mutation {
+  loginUser(input: { username: "admin", password: "admin123" }) {
+    token
+  }
+}
+```
+
+Copy the token generated for example: ![login](https://i.imgur.com/9V1pa6I.png)
+
+7. You could see a quick demo of the api in the link below: https://www.loom.com/share/01c1d730f7134780b588cfd042f5e390
+
 ## Technologies
 
 - https://github.com/jaredpalmer/backpack
