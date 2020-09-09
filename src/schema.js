@@ -5,6 +5,8 @@ import Message from './types/Message';
 
 import MessageQueries from './queries/message';
 
+import MessageMutations from './mutations/message';
+
 import MessageSubscriptions from './subscriptions/message';
 
 const Root = gql`
@@ -24,7 +26,15 @@ const Root = gql`
   }
 `;
 
-const resolvers = merge({}, MessageQueries, MessageSubscriptions);
+const resolvers = merge(
+  {},
+
+  MessageQueries,
+
+  MessageMutations,
+
+  MessageSubscriptions
+);
 
 const schema = makeExecutableSchema({
   typeDefs: [Root, Message],

@@ -182,6 +182,58 @@ httpServer.listen(_config__WEBPACK_IMPORTED_MODULE_3__["PORT"], () => {
 
 /***/ }),
 
+/***/ "./src/mutations/message/createMessage.js":
+/*!************************************************!*\
+  !*** ./src/mutations/message/createMessage.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _topics_message_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../topics/message/index */ "./src/topics/message/index.js");
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../index */ "./src/index.js");
+ // eslint-disable-next-line import/no-cycle
+
+
+/* harmony default export */ __webpack_exports__["default"] = (async (_, args) => {
+  const {
+    id,
+    text
+  } = await args.input;
+  await _index__WEBPACK_IMPORTED_MODULE_1__["pubsub"].publish(_topics_message_index__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    messageCreated: {
+      id,
+      text
+    }
+  });
+  return {
+    id,
+    text
+  };
+});
+
+/***/ }),
+
+/***/ "./src/mutations/message/index.js":
+/*!****************************************!*\
+  !*** ./src/mutations/message/index.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _createMessage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createMessage */ "./src/mutations/message/createMessage.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  Mutation: {
+    createMessage: _createMessage__WEBPACK_IMPORTED_MODULE_0__["default"]
+  }
+});
+
+/***/ }),
+
 /***/ "./src/queries/message/index.js":
 /*!**************************************!*\
   !*** ./src/queries/message/index.js ***!
@@ -229,7 +281,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _types_Message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./types/Message */ "./src/types/Message.js");
 /* harmony import */ var _queries_message__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./queries/message */ "./src/queries/message/index.js");
-/* harmony import */ var _subscriptions_message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./subscriptions/message */ "./src/subscriptions/message/index.js");
+/* harmony import */ var _mutations_message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./mutations/message */ "./src/mutations/message/index.js");
+/* harmony import */ var _subscriptions_message__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./subscriptions/message */ "./src/subscriptions/message/index.js");
+
 
 
 
@@ -251,7 +305,7 @@ const Root = apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["gql"]`
     subscription: Subscription
   }
 `;
-const resolvers = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["merge"])({}, _queries_message__WEBPACK_IMPORTED_MODULE_3__["default"], _subscriptions_message__WEBPACK_IMPORTED_MODULE_4__["default"]);
+const resolvers = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["merge"])({}, _queries_message__WEBPACK_IMPORTED_MODULE_3__["default"], _mutations_message__WEBPACK_IMPORTED_MODULE_4__["default"], _subscriptions_message__WEBPACK_IMPORTED_MODULE_5__["default"]);
 const schema = Object(apollo_server_express__WEBPACK_IMPORTED_MODULE_0__["makeExecutableSchema"])({
   typeDefs: [Root, _types_Message__WEBPACK_IMPORTED_MODULE_2__["default"]],
   resolvers
