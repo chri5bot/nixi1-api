@@ -8,11 +8,13 @@
 
 3. Install packages: `npm install`
 
-4. Run the project: `npm run dev`
+4. Add .env file
 
-5. Open the link: `http://localhost:4000/`
+5. Run the project: `npm run dev`
 
-6. First you need to login to generate a json web token
+6. Open the link: `http://localhost:4000/`
+
+7. First you need to login to generate a json web token
 
 ```graphql
 mutation {
@@ -24,7 +26,7 @@ mutation {
 
 Copy the token generated for example: ![login](https://i.imgur.com/9V1pa6I.png)
 
-7. You could see a quick demo of the api in the link below: https://www.loom.com/share/01c1d730f7134780b588cfd042f5e390
+8. You could see a quick demo of the api in the link below: https://www.loom.com/share/01c1d730f7134780b588cfd042f5e390
 
 ## Technologies
 
