@@ -1,10 +1,11 @@
 import { createServer } from 'http';
 import express from 'express';
 import { ApolloServer, PubSub } from 'apollo-server-express';
-import { PORT } from './config';
+import { PORT, JWT_SECRET } from './config';
 import schema from './schema';
 import mongoose from 'mongoose';
 import './utils/db';
+import jwt from 'jsonwebtoken';
 
 export const pubsub = new PubSub();
 
@@ -17,6 +18,31 @@ const server = new ApolloServer({
   introspection: true,
   tracing: true,
   path: '/',
+  context: async ({ req, connection }) => {
+    if (connection) {
+      return connection.context;
+    }
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return;
+    }
+
+    const user = await new Promise((resolve, reject) => {
+      if (!JWT_SECRET) {
+        return;
+      }
+      jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(decoded.username);
+      });
+    });
+
+    return { user };
+  },
 });
 
 server.applyMiddleware({

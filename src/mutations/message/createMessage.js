@@ -1,8 +1,9 @@
 import MESSAGE_CREATED from '../../topics/message/index';
 import { pubsub } from '../../index';
 import { Message } from '../../models/message';
+import { isAuthedResolver as requireAuth } from '../../utils/permissions';
 
-export default async (_, args) => {
+export default requireAuth(async (_, args) => {
   try {
     const { text } = await args.input;
     await Message.create({ text });
@@ -11,4 +12,4 @@ export default async (_, args) => {
   } catch (e) {
     return e.message;
   }
-};
+});

@@ -2,10 +2,12 @@ import { makeExecutableSchema, gql } from 'apollo-server-express';
 import { merge } from 'lodash';
 
 import Message from './types/Message';
+import User from './types/User';
 
 import MessageQueries from './queries/message';
 
 import MessageMutations from './mutations/message';
+import UserMutations from './mutations/user';
 
 import MessageSubscriptions from './subscriptions/message';
 
@@ -31,13 +33,14 @@ const resolvers = merge(
 
   MessageQueries,
 
+  UserMutations,
   MessageMutations,
 
   MessageSubscriptions
 );
 
 const schema = makeExecutableSchema({
-  typeDefs: [Root, Message],
+  typeDefs: [Root, User, Message],
   resolvers,
 });
 
