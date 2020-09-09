@@ -3,6 +3,8 @@ import express from 'express';
 import { ApolloServer, PubSub } from 'apollo-server-express';
 import { PORT } from './config';
 import schema from './schema';
+import mongoose from 'mongoose';
+import './utils/db';
 
 export const pubsub = new PubSub();
 
@@ -10,14 +12,26 @@ const app = express();
 
 const server = new ApolloServer({
   schema,
-  playground: {
-    settings: {
-      'editor.theme': 'light',
-    },
-  },
+  cors: true,
+  playground: process.env.NODE_ENV === 'development' ? true : false,
+  introspection: true,
+  tracing: true,
+  path: '/',
 });
 
-server.applyMiddleware({ app });
+server.applyMiddleware({
+  app,
+  path: '/',
+  cors: true,
+  onHealthCheck: () =>
+    new Promise((resolve, reject) => {
+      if (mongoose.connection.readyState > 0) {
+        resolve();
+      } else {
+        reject();
+      }
+    }),
+});
 
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);

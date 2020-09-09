@@ -25,11 +25,22 @@
   },
   "homepage": "https://github.com/chri5bot/nixi1-api#readme",
   "dependencies": {
+    "apollo-engine": "^1.1.2",
     "apollo-server-express": "^2.17.0",
     "backpack-core": "^0.8.4",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
-    "lodash": "^4.17.20"
+    "graphql-compose": "^7.20.1",
+    "graphql-compose-connection": "^7.0.1",
+    "graphql-compose-mongoose": "^8.0.3",
+    "graphql-middleware": "^4.0.2",
+    "graphql-tools": "^6.2.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.3",
+    "mongoose-bcrypt": "^1.8.1",
+    "mongoose-timestamp": "^0.6.0"
   }
 }

@@ -92,29 +92,19 @@ module.exports =
 /*!*****************************!*\
   !*** ./src/config/index.js ***!
   \*****************************/
-/*! exports provided: PORT, DB_USERNAME, DB_PASSWORD, DB_DATABASE, DB_HOST, DB_PORT, DB_DIALECT */
+/*! exports provided: PORT, MONGODB_URI */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORT", function() { return PORT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_USERNAME", function() { return DB_USERNAME; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_PASSWORD", function() { return DB_PASSWORD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_DATABASE", function() { return DB_DATABASE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_HOST", function() { return DB_HOST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_PORT", function() { return DB_PORT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_DIALECT", function() { return DB_DIALECT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONGODB_URI", function() { return MONGODB_URI; });
 /* harmony import */ var dotenv__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! dotenv */ "dotenv");
 /* harmony import */ var dotenv__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(dotenv__WEBPACK_IMPORTED_MODULE_0__);
 
 dotenv__WEBPACK_IMPORTED_MODULE_0___default.a.config();
-const PORT = process.env.PORT || 3000;
-const DB_USERNAME = process.env.DB_USERNAME || '';
-const DB_PASSWORD = process.env.DB_PASSWORD || '';
-const DB_DATABASE = process.env.DB_DATABASE || '';
-const DB_HOST = process.env.DB_HOST || '';
-const DB_PORT = process.env.DB_PORT || '';
-const DB_DIALECT = process.env.DB_DIALECT || '';
+const PORT = process.env.PORT || 4000;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://chris:WAneUWcKpx6qo81|@cluster0.284ov.mongodb.net/nixi1?retryWrites=true&w=majority';
 
 /***/ }),
 
@@ -136,6 +126,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var apollo_server_express__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(apollo_server_express__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
 /* harmony import */ var _schema__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./schema */ "./src/schema.js");
+/* harmony import */ var mongoose__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! mongoose */ "mongoose");
+/* harmony import */ var mongoose__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(mongoose__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _utils_db__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils/db */ "./src/utils/db.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -147,18 +140,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
+
 const pubsub = new apollo_server_express__WEBPACK_IMPORTED_MODULE_2__["PubSub"]();
 const app = express__WEBPACK_IMPORTED_MODULE_1___default()();
 const server = new apollo_server_express__WEBPACK_IMPORTED_MODULE_2__["ApolloServer"]({
   schema: _schema__WEBPACK_IMPORTED_MODULE_4__["default"],
-  playground: {
-    settings: {
-      'editor.theme': 'light'
-    }
-  }
+  cors: true,
+  playground:  true ? true : undefined,
+  introspection: true,
+  tracing: true,
+  path: '/'
 });
 server.applyMiddleware({
-  app
+  app,
+  path: '/',
+  cors: true,
+  onHealthCheck: () => new Promise((resolve, reject) => {
+    if (mongoose__WEBPACK_IMPORTED_MODULE_5___default.a.connection.readyState > 0) {
+      resolve();
+    } else {
+      reject();
+    }
+  })
 });
 const httpServer = Object(http__WEBPACK_IMPORTED_MODULE_0__["createServer"])(app);
 server.installSubscriptionHandlers(httpServer);
@@ -397,6 +401,33 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/utils/db.js":
+/*!*************************!*\
+  !*** ./src/utils/db.js ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var mongoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! mongoose */ "mongoose");
+/* harmony import */ var mongoose__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(mongoose__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/config/index.js");
+
+
+mongoose__WEBPACK_IMPORTED_MODULE_0___default.a.Promise = global.Promise;
+const connection = mongoose__WEBPACK_IMPORTED_MODULE_0___default.a.connect(_config__WEBPACK_IMPORTED_MODULE_1__["MONGODB_URI"], {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+mongoose__WEBPACK_IMPORTED_MODULE_0___default.a.set('useCreateIndex', true);
+connection.then(db => db).catch(err => {
+  console.log(err);
+});
+/* harmony default export */ __webpack_exports__["default"] = (connection);
+
+/***/ }),
+
 /***/ 0:
 /*!****************************!*\
   !*** multi ./src/index.js ***!
@@ -461,6 +492,17 @@ module.exports = require("http");
 /***/ (function(module, exports) {
 
 module.exports = require("lodash");
+
+/***/ }),
+
+/***/ "mongoose":
+/*!***************************!*\
+  !*** external "mongoose" ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("mongoose");
 
 /***/ })
 
